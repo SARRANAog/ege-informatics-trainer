@@ -1,0 +1,9 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ege-informatics-trainer"
+version = "0.1.0"
+description = "Offline desktop trainer for EGE Informatics"
+requires-python = ">=3.12"

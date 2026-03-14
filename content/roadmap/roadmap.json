@@ -1,0 +1,45 @@
+{
+  "title": "Дорожка подготовки к ЕГЭ по информатике",
+  "tasks": [
+    {
+      "task_number": 1,
+      "title": "Графы и таблицы",
+      "description": "Учимся сопоставлять граф, таблицу смежности и расстояния.",
+      "status": "available"
+    },
+    {
+      "task_number": 2,
+      "title": "Логика и таблицы истинности",
+      "description": "Операции логики, порядок вычислений, восстановление таблиц.",
+      "status": "available"
+    },
+    {
+      "task_number": 3,
+      "title": "Базы данных и таблицы",
+      "description": "Ключи, связи таблиц, фильтры и подсчёты.",
+      "status": "locked"
+    },
+    {
+      "task_number": 4,
+      "title": "Кодирование информации",
+      "description": "Кодовые таблицы, условие Фано и длина сообщений.",
+      "status": "locked"
+    },
+    {
+      "task_number": 5,
+      "title": "Исполнение алгоритмов",
+      "description": "Пошаговое выполнение команд и восстановление результата.",
+      "status": "locked"
+    }
+  ],
+  "weekly_reviews": [
+    {
+      "id": "wr1",
+      "title": "Weekly Review 1"
+    },
+    {
+      "id": "wr2",
+      "title": "Weekly Review 2"
+    }
+  ]
+}
