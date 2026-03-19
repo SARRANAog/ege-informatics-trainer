@@ -35,6 +35,10 @@ export interface TheoryExample {
     answer: string;
 }
 
+// Это текущий стабильный MVP-контракт теории, который реально рендерится сейчас.
+// При переходе на обязательные short/full блоки меняйте согласованно:
+// content/theory/* -> backend/content/loader.py -> backend/api/routes/theory.py
+// -> frontend/src/types/models.ts -> TheoryPage.
 export interface TheoryPayload {
     task_number: number;
     title: string;

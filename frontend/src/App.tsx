@@ -17,6 +17,9 @@ import type {
     WeeklyReviewItem,
 } from './types/models';
 
+// Активный composition root интерфейса.
+// Теория, практика и roadmap должны приходить из backend API.
+// Не подключайте здесь frontend/src/data/* как альтернативный источник правды.
 function App() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<TabKey>('roadmap');

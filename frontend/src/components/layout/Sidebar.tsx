@@ -1,13 +1,36 @@
-import { ProgressBar } from '../ui/ProgressBar';
 import type { TabKey } from '../../types/models';
 
 const items: Array<{ key: TabKey; label: string; caption: string }> = [
-    { key: 'roadmap', label: 'Дорожка', caption: 'Основной путь подготовки' },
-    { key: 'theory', label: 'Теория', caption: 'Краткие конспекты и ловушки' },
-    { key: 'practice', label: 'Практика', caption: 'Тренировочные упражнения' },
-    { key: 'mock', label: 'Пробник', caption: 'Режим как на экзамене' },
-    { key: 'progress', label: 'Прогресс', caption: 'Проценты и ориентир по баллам' },
-    { key: 'profile', label: 'Профиль', caption: 'Локальные настройки' }
+    {
+        key: 'roadmap',
+        label: 'Дорожка',
+        caption: 'Общий маршрут подготовки',
+    },
+    {
+        key: 'theory',
+        label: 'Теория',
+        caption: 'Краткая и подробная теория',
+    },
+    {
+        key: 'practice',
+        label: 'Практика',
+        caption: 'Тесты и код на Python',
+    },
+    {
+        key: 'mock',
+        label: 'Пробник',
+        caption: 'Режим как на экзамене',
+    },
+    {
+        key: 'progress',
+        label: 'Прогресс',
+        caption: 'Локальный обзор продвижения',
+    },
+    {
+        key: 'profile',
+        label: 'Профиль',
+        caption: 'Настройки ученика',
+    },
 ];
 
 interface SidebarProps {
@@ -21,53 +44,61 @@ export function Sidebar({
     activeTab,
     onChange,
     progress,
-    currentTaskNumber
+    currentTaskNumber,
 }: SidebarProps) {
     return (
-        <aside className="sidebar">
-            <div className="sidebar__brand">
-                <div className="sidebar__logo">
-                    <div className="sidebar__logo-mark">E</div>
-                    <div className="sidebar__logo-copy">
-                        <span>EGE Informatics Trainer</span>
-                        <strong>Офлайн-подготовка по информатике</strong>
-                    </div>
+        <aside className="w-[320px] border-r border-slate-900 bg-[#020817] px-6 py-8">
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-5">
+                <div className="text-lg font-semibold text-slate-100">
+                    EGE Informatics Trainer
                 </div>
+                <p className="mt-2 text-sm leading-6 text-slate-400">
+                    Офлайн-тренажёр по ЕГЭ по информатике.
+                </p>
 
-                <div className="sidebar__progress">
-                    <div className="sidebar__progress-copy">
-                        <span>Общий прогресс</span>
-                        <strong>{progress}%</strong>
+                <div className="mt-5 rounded-2xl bg-slate-950/70 p-4">
+                    <div className="text-xs uppercase tracking-wide text-slate-500">
+                        Текущий статус
                     </div>
-                    <ProgressBar value={progress} compact />
-                </div>
-
-                <div className="sidebar__current-task">
-                    {currentTaskNumber
-                        ? `Сейчас открыт материал по заданию ${currentTaskNumber}`
-                        : 'Выбери первую линию и начни путь.'}
+                    <div className="mt-2 text-sm text-slate-300">
+                        Общий прогресс: {progress}%
+                    </div>
+                    <div className="mt-2 text-sm leading-6 text-slate-400">
+                        {currentTaskNumber
+                            ? `Сейчас открыт блок по заданию ${currentTaskNumber}.`
+                            : 'Выбери раздел и начни работу.'}
+                    </div>
                 </div>
             </div>
 
-            <div className="sidebar__section">
-                <span className="sidebar__section-title">Разделы</span>
+            <nav className="mt-6 space-y-3">
+                {items.map((item) => {
+                    const active = item.key === activeTab;
 
-                <nav className="sidebar__nav">
-                    {items.map((item) => (
+                    return (
                         <button
                             key={item.key}
-                            className={`sidebar__nav-item ${activeTab === item.key ? 'is-active' : ''}`}
+                            type="button"
                             onClick={() => onChange(item.key)}
+                            className={`block w-full rounded-3xl border px-5 py-5 text-left transition ${active
+                                    ? 'border-cyan-500/30 bg-cyan-500/10'
+                                    : 'border-slate-800 bg-slate-900/40 hover:border-slate-700 hover:bg-slate-900/70'
+                                }`}
                         >
-                            <span>{item.label}</span>
-                            <small>{item.caption}</small>
+                            <div className="text-xl font-semibold text-slate-100">
+                                {item.label}
+                            </div>
+                            <div className="mt-1 text-sm leading-6 text-slate-400">
+                                {item.caption}
+                            </div>
                         </button>
-                    ))}
-                </nav>
-            </div>
+                    );
+                })}
+            </nav>
 
-            <div className="sidebar__footer">
-                Теория, практика и контрольные собраны в один маршрут. Можно идти в своём темпе, без лимита по дням.
+            <div className="mt-6 rounded-3xl border border-slate-800 bg-slate-900/40 p-5 text-sm leading-7 text-slate-400">
+                Сейчас активный приоритет — чтобы теория рендерилась из нового слоя
+                данных, а теоретические задания шли только через выбор ответа.
             </div>
         </aside>
     );

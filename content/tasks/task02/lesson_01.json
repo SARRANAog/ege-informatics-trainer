@@ -1,39 +1,67 @@
 {
   "task_number": 2,
-  "title": "Задание 2 — стартовая практика",
+  "title": "Задание 2 — логика кодом на Python",
   "exercises": [
     {
-      "id": "task02-choice-01",
-      "title": "Импликация",
-      "type": "choice",
-      "prompt": "Когда выражение A → B ложно? Напиши ответ кратко.",
-      "expected_answer": "когда a=1 и b=0",
-      "hint_after_first_error": "Импликация почти всегда истинна. Есть только один ложный случай.",
-      "full_explanation": "Импликация A → B ложна только в одном случае: если A истинно, а B ложно. Во всех остальных наборах значений она истинна."
-    },
-    {
       "id": "task02-code-01",
-      "title": "Подсчёт чётных чисел",
+      "title": "Перебор строк таблицы истинности",
       "type": "code",
-      "prompt": "Напиши программу, которая читает одно целое число n и выводит количество чётных чисел от 1 до n включительно.",
-      "starter_code": "n = int(input())\\n# напиши решение ниже\\n",
+      "solution_language": "python",
+      "prompt": "Напиши программу на Python, которая перебирает все значения x, y, z и печатает только те строки, для которых выражение (x and y) or (not z) равно 0.",
+      "starter_code": "from itertools import product\n\nfor x, y, z in product([0, 1], repeat=3):\n    f = int((x and y) or (not z))\n    if f == 0:\n        print(x, y, z, f)\n",
       "tests": [
         {
-          "name": "sample-1",
-          "stdin": "5\\n",
-          "expected_stdout": "2"
-        },
-        {
-          "name": "sample-2",
-          "stdin": "10\\n",
-          "expected_stdout": "5"
+          "name": "contains-0-0-1",
+          "stdin": "",
+          "expected_stdout": "0 0 1 0\n0 1 1 0\n1 0 1 0"
         }
       ],
       "required_nodes": [
         "For",
         "If"
       ],
-      "full_explanation": "Базовый вариант: пройти циклом по числам от 1 до n, проверить чётность через остаток и увеличить счётчик. Позже можно показать и более короткую формулу."
+      "hint_after_first_error": "Тебе нужен полный перебор всех наборов значений и печать только тех строк, где результат равен нулю.",
+      "full_explanation": "Это базовый шаблон задания 2 кодом: перебор всех наборов через itertools.product, вычисление логического выражения и отбор только подходящих строк."
+    },
+    {
+      "id": "task02-code-02",
+      "title": "Импликация в Python",
+      "type": "code",
+      "solution_language": "python",
+      "prompt": "Напиши программу на Python, которая перебирает все значения a и b и печатает таблицу истинности для выражения a -> b.",
+      "starter_code": "from itertools import product\n\nfor a, b in product([0, 1], repeat=2):\n    f = int((not a) or b)\n    print(a, b, f)\n",
+      "tests": [
+        {
+          "name": "truth-table",
+          "stdin": "",
+          "expected_stdout": "0 0 1\n0 1 1\n1 0 0\n1 1 1"
+        }
+      ],
+      "required_nodes": [
+        "For"
+      ],
+      "hint_after_first_error": "Импликацию удобно записывать как (not a) or b.",
+      "full_explanation": "Ложный результат должен получиться только в одной строке: a = 1, b = 0. Программа должна показать это в готовой таблице истинности."
+    },
+    {
+      "id": "task02-code-03",
+      "title": "Шаблон для скрытых столбцов",
+      "type": "code",
+      "solution_language": "python",
+      "prompt": "Сделай заготовку программы на Python для сложного варианта задания 2: нужно перебрать перестановки переменных x, y, z, w и подготовить каркас для проверки строк таблицы со скрытыми столбцами.",
+      "starter_code": "from itertools import permutations\n\ncolumns = ('c1', 'c2', 'c3', 'c4')\nvariables = ('x', 'y', 'z', 'w')\nrows = [\n    # сюда потом подставляются строки из условия\n]\n\nfor order in permutations(variables):\n    mapping = dict(zip(columns, order))\n    ok = True\n\n    for row in rows:\n        # здесь нужно восстановить значения переменных,\n        # вычислить выражение и проверить совпадение\n        pass\n\n    if ok:\n        print(order)\n",
+      "tests": [
+        {
+          "name": "contains-permutations",
+          "stdin": "",
+          "expected_stdout": ""
+        }
+      ],
+      "required_nodes": [
+        "For"
+      ],
+      "hint_after_first_error": "В этом упражнении важен не готовый ответ на конкретную задачу, а правильный каркас решения через permutations.",
+      "full_explanation": "Такой шаблон нужен для более сложных вариантов задания 2, когда неизвестно, какой столбец соответствует какой переменной. Идея решения — перебирать перестановки и проверять все строки условия."
     }
   ]
 }

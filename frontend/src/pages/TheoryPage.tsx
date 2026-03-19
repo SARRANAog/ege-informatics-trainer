@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+п»їimport { useMemo, useState } from 'react';
 import { TheoryTaskView } from '../components/theory/TheoryTaskView';
 import { theoryTasks } from '../data/egeContent';
 import type { TheoryMode } from '../types/ege';
@@ -17,11 +17,11 @@ export default function TheoryPage() {
             <aside className="h-fit rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
                 <div className="px-2 pb-3">
                     <div className="text-sm font-semibold text-slate-100">
-                        Теория по заданиям
+                        РўРµРѕСЂРёСЏ РїРѕ Р·Р°РґР°РЅРёСЏРј
                     </div>
                     <p className="mt-2 text-sm leading-6 text-slate-400">
-                        Для каждого задания есть краткая теория и подробный разбор. Формат
-                        практики сразу отмечен: выбор ответа или код на Python.
+                        Р”Р»СЏ РєР°Р¶РґРѕРіРѕ Р·Р°РґР°РЅРёСЏ РµСЃС‚СЊ РєСЂР°С‚РєР°СЏ С‚РµРѕСЂРёСЏ Рё РїРѕРґСЂРѕР±РЅС‹Р№ СЂР°Р·Р±РѕСЂ. Р¤РѕСЂРјР°С‚
+                        РїСЂР°РєС‚РёРєРё СЃСЂР°Р·Сѓ РѕС‚РјРµС‡РµРЅ: РІС‹Р±РѕСЂ РѕС‚РІРµС‚Р° РёР»Рё РєРѕРґ РЅР° Python.
                     </p>
                 </div>
 
@@ -50,9 +50,10 @@ export default function TheoryPage() {
                                     <div
                                         className={`rounded-full border px-2 py-0.5 text-[10px] ${formatClass}`}
                                     >
-                                        {task.practiceFormat === 'code' ? 'Python' : 'Выбор'}
+                                        {task.practiceFormat === 'code' ? 'Python' : 'Р’С‹Р±РѕСЂ'}
                                     </div>
                                 </div>
+
                                 <div className="mt-1 text-xs leading-5 text-slate-400">
                                     {task.title}
                                 </div>

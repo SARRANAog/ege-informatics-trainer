@@ -1,5 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+/**
+ * ������������ �������� Vite-������ �������.
+ * package.json ������ ��������� Vite ���� ����� `--config vite.config.ts`.
+ * �� ���������� ����� ������������ ����� ����� ��� frontend-�������.
+ */
 export default defineConfig({
     plugins: [react()],
     server: {

@@ -1,12 +1,14 @@
 import sqlite3
 
-from desktop.paths import DB_PATH, ensure_runtime_dirs
+from backend.core.runtime import DB_PATH, ensure_runtime_dirs
+
 
 def get_connection() -> sqlite3.Connection:
     ensure_runtime_dirs()
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
     return connection
+
 
 def init_db() -> None:
     with get_connection() as conn:

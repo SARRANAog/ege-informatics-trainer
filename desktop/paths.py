@@ -1,13 +1,27 @@
-from pathlib import Path
+"""
+Совместимый shim для старых импортов desktop.paths.
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
-USER_DATA_DIR = ROOT_DIR / "user_data"
-LOGS_DIR = USER_DATA_DIR / "logs"
-BACKUPS_DIR = USER_DATA_DIR / "backups"
-DB_PATH = USER_DATA_DIR / "profile.db"
-FRONTEND_DIST_DIR = ROOT_DIR / "frontend" / "dist"
+Единый источник runtime-путей теперь находится в backend.core.runtime.
+Новый код должен импортировать пути оттуда, чтобы desktop оставался внешним
+слоем над backend, а не наоборот.
+"""
 
-def ensure_runtime_dirs() -> None:
-    USER_DATA_DIR.mkdir(exist_ok=True)
-    LOGS_DIR.mkdir(exist_ok=True)
-    BACKUPS_DIR.mkdir(exist_ok=True)
+from backend.core.runtime import (
+    BACKUPS_DIR,
+    DB_PATH,
+    FRONTEND_DIST_DIR,
+    LOGS_DIR,
+    ROOT_DIR,
+    USER_DATA_DIR,
+    ensure_runtime_dirs,
+)
+
+__all__ = [
+    "ROOT_DIR",
+    "USER_DATA_DIR",
+    "LOGS_DIR",
+    "BACKUPS_DIR",
+    "DB_PATH",
+    "FRONTEND_DIST_DIR",
+    "ensure_runtime_dirs",
+]

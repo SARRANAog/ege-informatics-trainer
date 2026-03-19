@@ -1,4 +1,4 @@
-import { useState } from 'react';
+п»їimport { useState } from 'react';
 import { PracticeTaskView } from '../components/practice/PracticeTaskView';
 import { practiceQuestions, theoryTasks } from '../data/egeContent';
 
@@ -10,11 +10,11 @@ export default function PracticePage() {
             <aside className="h-fit rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
                 <div className="px-2 pb-3">
                     <div className="text-sm font-semibold text-slate-100">
-                        Практика по заданиям
+                        РџСЂР°РєС‚РёРєР° РїРѕ Р·Р°РґР°РЅРёСЏРј
                     </div>
                     <p className="mt-2 text-sm leading-6 text-slate-400">
-                        Некодовые задания идут через выбор ответа. Кодовые задания идут через
-                        ручной ввод решения на Python.
+                        РўРµРѕСЂРµС‚РёС‡РµСЃРєРёРµ Р·Р°РґР°РЅРёСЏ РёРґСѓС‚ С‚РѕР»СЊРєРѕ С‡РµСЂРµР· РІС‹Р±РѕСЂ РѕС‚РІРµС‚Р°. РљРѕРґРѕРІС‹Рµ Р·Р°РґР°РЅРёСЏ
+                        РёРґСѓС‚ С‡РµСЂРµР· СЂСѓС‡РЅРѕР№ РІРІРѕРґ СЂРµС€РµРЅРёСЏ РЅР° Python.
                     </p>
                 </div>
 
@@ -43,9 +43,10 @@ export default function PracticePage() {
                                     <div
                                         className={`rounded-full border px-2 py-0.5 text-[10px] ${formatClass}`}
                                     >
-                                        {task.practiceFormat === 'code' ? 'Python' : 'Выбор'}
+                                        {task.practiceFormat === 'code' ? 'Python' : 'Р’С‹Р±РѕСЂ'}
                                     </div>
                                 </div>
+
                                 <div className="mt-1 text-xs leading-5 text-slate-400">
                                     {task.practiceFormatLabel}
                                 </div>

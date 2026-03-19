@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+п»їimport { useMemo, useState } from 'react';
 import type {
     PracticeChoiceQuestion,
     PracticeCodeQuestion,
@@ -10,12 +10,12 @@ interface PracticeTaskViewProps {
     questions: PracticeQuestion[];
 }
 
-type FeedbackState = 'idle' | 'correct' | 'wrong';
+type ChoiceFeedbackState = 'idle' | 'correct' | 'wrong';
 
 const difficultyLabel: Record<string, string> = {
-    easy: 'Лёгкий',
-    medium: 'Средний',
-    hard: 'Сложный',
+    easy: 'Р›С‘РіРєРёР№',
+    medium: 'РЎСЂРµРґРЅРёР№',
+    hard: 'РЎР»РѕР¶РЅС‹Р№',
 };
 
 export function PracticeTaskView({
@@ -30,23 +30,32 @@ export function PracticeTaskView({
     const [selectedOptions, setSelectedOptions] = useState<Record<string, number>>(
         {},
     );
-    const [attempts, setAttempts] = useState<Record<string, number>>({});
-    const [feedback, setFeedback] = useState<Record<string, FeedbackState>>({});
+    const [choiceAttempts, setChoiceAttempts] = useState<Record<string, number>>(
+        {},
+    );
+    const [choiceFeedback, setChoiceFeedback] = useState<
+        Record<string, ChoiceFeedbackState>
+    >({});
     const [revealed, setRevealed] = useState<Record<string, boolean>>({});
     const [codeAnswers, setCodeAnswers] = useState<Record<string, string>>({});
+    const [codeReviewed, setCodeReviewed] = useState<Record<string, boolean>>({});
 
-    const solvedCount = taskQuestions.filter(
-        (question) => feedback[question.id] === 'correct',
-    ).length;
+    const solvedCount = taskQuestions.filter((question) => {
+        if (question.kind === 'choice') {
+            return choiceFeedback[question.id] === 'correct';
+        }
+        return codeReviewed[question.id] === true;
+    }).length;
 
     const hasChoice = taskQuestions.some((question) => question.kind === 'choice');
     const hasCode = taskQuestions.some((question) => question.kind === 'code');
 
-    const headerText = hasCode && !hasChoice
-        ? 'Это кодовое задание. Практика здесь идёт через ручной ввод решения на Python.'
-        : hasChoice && !hasCode
-            ? 'Это некодовое задание. Теоретические вопросы здесь даются только в формате выбора ответа.'
-            : 'В этом блоке есть и вопросы с выбором ответа, и кодовые упражнения. Ручной ввод используется только для кода.';
+    const headerText =
+        hasCode && !hasChoice
+            ? 'Р­С‚Рѕ РєРѕРґРѕРІРѕРµ Р·Р°РґР°РЅРёРµ. Р—РґРµСЃСЊ СЂСѓС‡РЅРѕР№ РІРІРѕРґ РѕСЃС‚Р°С‘С‚СЃСЏ С‚РѕР»СЊРєРѕ РґР»СЏ СЂРµС€РµРЅРёСЏ РЅР° Python.'
+            : hasChoice && !hasCode
+                ? 'Р­С‚Рѕ С‚РµРѕСЂРµС‚РёС‡РµСЃРєРѕРµ Р·Р°РґР°РЅРёРµ. Р—РґРµСЃСЊ Р±РѕР»СЊС€Рµ РЅРµС‚ СЂСѓС‡РЅРѕРіРѕ С‚РµРєСЃС‚РѕРІРѕРіРѕ РѕС‚РІРµС‚Р° вЂ” С‚РѕР»СЊРєРѕ РІС‹Р±РѕСЂ РІР°СЂРёР°РЅС‚Р°.'
+                : 'Р—РґРµСЃСЊ РјРѕРіСѓС‚ Р±С‹С‚СЊ Рё С‚РµСЃС‚РѕРІС‹Рµ, Рё РєРѕРґРѕРІС‹Рµ СѓРїСЂР°Р¶РЅРµРЅРёСЏ. РўРµРєСЃС‚ СЂСѓРєР°РјРё РІРІРѕРґРёС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ РєРѕРґРѕРІС‹С… Р·Р°РґР°РЅРёСЏС….';
 
     const handleCheckChoice = (question: PracticeChoiceQuestion) => {
         const selected = selectedOptions[question.id];
@@ -56,14 +65,14 @@ export function PracticeTaskView({
         }
 
         if (selected === question.correctOptionIndex) {
-            setFeedback((prev) => ({ ...prev, [question.id]: 'correct' }));
+            setChoiceFeedback((prev) => ({ ...prev, [question.id]: 'correct' }));
             setRevealed((prev) => ({ ...prev, [question.id]: true }));
             return;
         }
 
-        const nextAttempts = (attempts[question.id] ?? 0) + 1;
-        setAttempts((prev) => ({ ...prev, [question.id]: nextAttempts }));
-        setFeedback((prev) => ({ ...prev, [question.id]: 'wrong' }));
+        const nextAttempts = (choiceAttempts[question.id] ?? 0) + 1;
+        setChoiceAttempts((prev) => ({ ...prev, [question.id]: nextAttempts }));
+        setChoiceFeedback((prev) => ({ ...prev, [question.id]: 'wrong' }));
 
         if (nextAttempts >= 3) {
             setRevealed((prev) => ({ ...prev, [question.id]: true }));
@@ -72,29 +81,29 @@ export function PracticeTaskView({
 
     const renderChoiceQuestion = (question: PracticeChoiceQuestion) => {
         const selected = selectedOptions[question.id];
-        const questionAttempts = attempts[question.id] ?? 0;
+        const attempts = choiceAttempts[question.id] ?? 0;
+        const feedback = choiceFeedback[question.id] ?? 'idle';
         const isRevealed = revealed[question.id] ?? false;
-        const state = feedback[question.id] ?? 'idle';
 
         return (
             <article
                 key={question.id}
-                className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6"
+                className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6"
             >
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-300">
                         {difficultyLabel[question.difficulty]}
                     </div>
                     <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs text-cyan-300">
-                        Теория • выбор ответа
+                        РўРµРѕСЂРёСЏ вЂў РІС‹Р±РѕСЂ РѕС‚РІРµС‚Р°
                     </div>
                 </div>
 
-                <h3 className="mt-4 text-lg font-semibold text-slate-100">
+                <h3 className="mt-4 text-xl font-semibold text-slate-100">
                     {question.title}
                 </h3>
 
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 text-sm leading-8 text-slate-300">
                     {question.prompt}
                 </p>
 
@@ -103,9 +112,7 @@ export function PracticeTaskView({
                         const isSelected = selected === index;
                         const showCorrect = isRevealed && index === question.correctOptionIndex;
                         const showWrongSelected =
-                            isRevealed &&
-                            isSelected &&
-                            index !== question.correctOptionIndex;
+                            isRevealed && isSelected && index !== question.correctOptionIndex;
 
                         return (
                             <button
@@ -117,7 +124,7 @@ export function PracticeTaskView({
                                         [question.id]: index,
                                     }))
                                 }
-                                className={`block w-full rounded-2xl border px-4 py-3 text-left text-sm transition ${showCorrect
+                                className={`block w-full rounded-2xl border px-4 py-4 text-left text-sm transition ${showCorrect
                                         ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-200'
                                         : showWrongSelected
                                             ? 'border-rose-500/50 bg-rose-500/10 text-rose-200'
@@ -137,10 +144,10 @@ export function PracticeTaskView({
                     <button
                         type="button"
                         onClick={() => handleCheckChoice(question)}
-                        disabled={selected === undefined || state === 'correct'}
+                        disabled={selected === undefined || feedback === 'correct'}
                         className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        Проверить
+                        РџСЂРѕРІРµСЂРёС‚СЊ
                     </button>
 
                     <button
@@ -150,30 +157,30 @@ export function PracticeTaskView({
                         }
                         className="rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:bg-slate-800"
                     >
-                        Показать разбор
+                        РџРѕРєР°Р·Р°С‚СЊ СЂР°Р·Р±РѕСЂ
                     </button>
                 </div>
 
-                {state === 'correct' ? (
+                {feedback === 'correct' ? (
                     <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
-                        Верно. Задача засчитана.
+                        Р’РµСЂРЅРѕ. Р—Р°РґР°С‡Р° Р·Р°СЃС‡РёС‚Р°РЅР°.
                     </div>
                 ) : null}
 
-                {state === 'wrong' && questionAttempts >= 1 && !isRevealed ? (
+                {feedback === 'wrong' && attempts >= 1 && !isRevealed ? (
                     <div className="mt-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-                        Намёк: {question.hint}
+                        РќР°РјС‘Рє: {question.hint}
                     </div>
                 ) : null}
 
                 {isRevealed ? (
                     <div className="mt-4 rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-                        <div className="text-sm font-medium text-slate-100">Разбор</div>
-                        <p className="mt-2 text-sm leading-6 text-slate-300">
+                        <div className="text-sm font-medium text-slate-100">Р Р°Р·Р±РѕСЂ</div>
+                        <p className="mt-2 text-sm leading-7 text-slate-300">
                             {question.explanation}
                         </p>
                         <div className="mt-3 text-xs text-slate-400">
-                            Попыток: {questionAttempts}
+                            РџРѕРїС‹С‚РѕРє: {attempts}
                         </div>
                     </div>
                 ) : null}
@@ -183,26 +190,27 @@ export function PracticeTaskView({
 
     const renderCodeQuestion = (question: PracticeCodeQuestion) => {
         const isRevealed = revealed[question.id] ?? false;
+        const reviewed = codeReviewed[question.id] ?? false;
 
         return (
             <article
                 key={question.id}
-                className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6"
+                className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6"
             >
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-300">
                         {difficultyLabel[question.difficulty]}
                     </div>
                     <div className="rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-3 py-1 text-xs text-fuchsia-300">
-                        Код • Python
+                        РљРѕРґ вЂў Python
                     </div>
                 </div>
 
-                <h3 className="mt-4 text-lg font-semibold text-slate-100">
+                <h3 className="mt-4 text-xl font-semibold text-slate-100">
                     {question.title}
                 </h3>
 
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 text-sm leading-8 text-slate-300">
                     {question.prompt}
                 </p>
 
@@ -226,21 +234,37 @@ export function PracticeTaskView({
                         }
                         className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-cyan-400"
                     >
-                        Показать требования
+                        РџРѕРєР°Р·Р°С‚СЊ С‚СЂРµР±РѕРІР°РЅРёСЏ
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            setCodeReviewed((prev) => ({ ...prev, [question.id]: true }))
+                        }
+                        className="rounded-xl border border-fuchsia-500/40 px-4 py-2 text-sm text-fuchsia-200 transition hover:bg-fuchsia-500/10"
+                    >
+                        РћС‚РјРµС‚РёС‚СЊ РєР°Рє СЂР°Р·РѕР±СЂР°РЅРЅРѕРµ
                     </button>
                 </div>
 
                 <div className="mt-4 rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 px-4 py-3 text-sm text-fuchsia-200">
-                    Для этого задания ручной ввод нужен именно для написания решения на Python.
+                    Р”Р»СЏ РєРѕРґРѕРІС‹С… Р·Р°РґР°РЅРёР№ СЂСѓС‡РЅРѕР№ РІРІРѕРґ СЃРѕС…СЂР°РЅСЏРµРј. Р”Р»СЏ С‚РµРѕСЂРµС‚РёС‡РµСЃРєРёС… РІРѕРїСЂРѕСЃРѕРІ РµРіРѕ Р±РѕР»СЊС€Рµ РЅРµС‚.
                 </div>
+
+                {reviewed ? (
+                    <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+                        РЈРїСЂР°Р¶РЅРµРЅРёРµ РѕС‚РјРµС‡РµРЅРѕ РєР°Рє СЂР°Р·РѕР±СЂР°РЅРЅРѕРµ.
+                    </div>
+                ) : null}
 
                 {isRevealed ? (
                     <div className="mt-4 grid gap-4 xl:grid-cols-2">
                         <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
                             <div className="text-sm font-medium text-slate-100">
-                                Что должно быть в решении
+                                Р§С‚Рѕ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РІ СЂРµС€РµРЅРёРё
                             </div>
-                            <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-300">
+                            <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-300">
                                 {question.solutionRequirements.map((item) => (
                                     <li key={item} className="rounded-xl bg-slate-900 p-3">
                                         {item}
@@ -250,12 +274,12 @@ export function PracticeTaskView({
                         </div>
 
                         <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-                            <div className="text-sm font-medium text-slate-100">Разбор</div>
-                            <p className="mt-3 text-sm leading-6 text-slate-300">
+                            <div className="text-sm font-medium text-slate-100">Р Р°Р·Р±РѕСЂ</div>
+                            <p className="mt-3 text-sm leading-7 text-slate-300">
                                 {question.explanation}
                             </p>
                             <div className="mt-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
-                                Намёк: {question.hint}
+                                РќР°РјС‘Рє: {question.hint}
                             </div>
                         </div>
                     </div>
@@ -266,30 +290,30 @@ export function PracticeTaskView({
 
     return (
         <div className="space-y-6">
-            <section className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <section className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
                     <div>
                         <div className="inline-flex items-center rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300">
-                            Практика
+                            РџСЂР°РєС‚РёРєР°
                         </div>
                         <h2 className="mt-3 text-2xl font-semibold text-slate-100">
-                            Задание {taskId}
+                            Р—Р°РґР°РЅРёРµ {taskId}
                         </h2>
-                        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+                        <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">
                             {headerText}
                         </p>
                     </div>
 
                     <div className="rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-300">
-                        Решено: <span className="font-semibold text-slate-100">{solvedCount}</span> из{' '}
+                        Р РµС€РµРЅРѕ: <span className="font-semibold text-slate-100">{solvedCount}</span> РёР·{' '}
                         <span className="font-semibold text-slate-100">{taskQuestions.length}</span>
                     </div>
                 </div>
             </section>
 
             {taskQuestions.length === 0 ? (
-                <section className="rounded-2xl border border-dashed border-slate-800 bg-slate-900/50 p-6 text-sm text-slate-400">
-                    Для этого задания практика ещё не добавлена.
+                <section className="rounded-3xl border border-dashed border-slate-800 bg-slate-900/50 p-6 text-sm text-slate-400">
+                    Р”Р»СЏ СЌС‚РѕРіРѕ Р·Р°РґР°РЅРёСЏ РїСЂР°РєС‚РёРєР° РµС‰С‘ РЅРµ РґРѕР±Р°РІР»РµРЅР°.
                 </section>
             ) : (
                 taskQuestions.map((question) =>
